@@ -42,7 +42,7 @@ dependencies:
   audioplayers: ^0.20.1 #for audios player
   dropdown_search: ^1.0.3 #for drop downmenu
   dotted_border: ^2.0.0+1 #for dotted border line
-  flutter_icons: ^1.1.0 #for all bundle icons
+  flutter_font_icons: ^2.2.4 #for all bundle icons
   map_launcher: ^2.1.1 #for external map launcher
   url_launcher: ^6.0.12 # to launch email, tel and url
   supabase: ^0.2.7 #for supabase connection

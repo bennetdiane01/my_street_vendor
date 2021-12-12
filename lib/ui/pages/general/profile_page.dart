@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_font_icons/flutter_font_icons.dart';
+
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';

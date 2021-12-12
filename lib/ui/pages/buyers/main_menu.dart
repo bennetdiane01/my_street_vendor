@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:my_street_vendor/ui/pages/buyers/favorite_page.dart';
 import 'package:my_street_vendor/ui/pages/buyers/map_page.dart';
 import 'package:my_street_vendor/ui/pages/general/profile_page.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+
 
 class MainMenu extends StatefulWidget {
   const MainMenu({Key? key}) : super(key: key);
