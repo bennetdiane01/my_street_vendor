@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
+import 'package:my_street_vendor/controller/login_controller.dart';
 import 'package:my_street_vendor/ui/pages/general/otp_keypad.dart';
 import 'package:my_street_vendor/ui/pages/general/otp_screen.dart';
 import 'package:my_street_vendor/ui/pages/general/register.dart';
@@ -25,41 +27,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _isLoading = false;
-  TextEditingController fullnameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController addressNoController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  //TextEditingController idTypeController = TextEditingController();
-  TextEditingController idNumberController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>(); // for form state key
 
-
-  //upload id card
-  //user type
-
-  //save with Hive
-  //var box = Hive.box('phoneNumber');
-  final box = GetStorage();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print(box.read('phone'));
-    if(box.read('phone') != ""){
-      phoneController.text = box.read('phone');
-    }
-  }
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-
-  }
+  final LoginController controller = Get.put(LoginController());
 
 
   @override
@@ -95,52 +66,22 @@ class _LoginPageState extends State<LoginPage> {
               heightSpace,
               heightSpace,
               heightSpace,
-/*
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Registration())),
-                      child: Text("Don't have an account? Register", style: black16MediumTextStyle,)
-                  ),
-                ],
-              )
-*/
-            ],
+        ],
           ),
         ),
       ),
     );
   }
 
-  //phone
-/*
-  Widget _txtFullname() {
-    return TextFormFieldWidget(
-      hintText: "Enter Full Name",
-      obscureText: false,
-      textInputType: TextInputType.emailAddress,
-      actionKeyboard: TextInputAction.next,
-      functionValidate: commonValidation,
-      controller: emailController,
-      onSubmitField: () {},
-      parametersValidate: "Please an full name.",
-      txtColor: colorBlack,
-      inputLength: LengthLimitingTextInputFormatter(11),
-      //prefixIcon: Icon(Icons.email, color: colorBlack,),
-    );
-  }
-*/
-  // Phone
   Widget _txtPhone() {
     return TextFormFieldWidget(
       hintText: "Phone e.g +13111111111",
       obscureText: false,
-      enable: _isLoading == true ? false : true,
+      enable: controller.isLoading.value ? false : true,
       textInputType: TextInputType.phone,
       actionKeyboard: TextInputAction.next,
       functionValidate: commonValidation,
-      controller: phoneController,
+      controller: controller.phoneController,
       onSubmitField: () {},
       parametersValidate: "Please an phone number.",
       txtColor: colorBlack,
@@ -150,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //Password
-  Widget _txtPassword() {
+  /*Widget _txtPassword() {
     return TextFormFieldWidget(
       hintText: "Enter Password",
       obscureText: true,
@@ -164,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
       inputLength: LengthLimitingTextInputFormatter(150),
       //prefixIcon: Icon(Icons.email, color: colorBlack,),
     );
-  }
+  }*/
 
   // for btn login
   Widget _btnLogin(){
@@ -181,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
           color: primaryColor,
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Center(child: _isLoading == true ? Center(child: CircularProgressIndicator()) : Text('Login/Register', style: white20SemiBoldTextStyle,)),
+        child: Center(child: controller.isLoading.value ? Center(child: CircularProgressIndicator()) : Text('Login/Register', style: white20SemiBoldTextStyle,)),
       ),
     );
   }
@@ -215,26 +156,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn() async {
-    setState(() {
-      _isLoading = true;
-    });
-    if (!_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = false;
-      });
+
+    if (_formKey.currentState!.validate()) {
+
+      controller.login();
+
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
-      return ScaffoldMessenger.of(context).showSnackBar(
+
+    } else{
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: const Text('Input Phone Number'),
           backgroundColor: colorRed,),
       );
-    } else{
-      box.write('phone', phoneController.text);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => OTPScreen(phoneNumber: phoneController.text,)));
-    }
+
+      }
     //final response = await client.auth.signUp('olawhizzy@gmail.com','1234567890');
     //final response = await client.auth.signIn(phone: '+2348166239214');
-    final response = await client.auth.signUpWithPhone(phoneController.text, RandomDigits.getInteger(6).toString()).whenComplete(() async {
+   /* final response = await client.auth.signUpWithPhone(phoneController.text, RandomDigits.getInteger(6).toString()).whenComplete(() async {
       await client.from('userDetails').insert([
         { 'phone': phoneController.text},
       ]).execute();
@@ -269,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
       _errorDialog('Error', 'An error occured! \n${response.error?.message} \nPlease use your country code e.g +1111111111');
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (context) => OTPScreen(phoneNumber: phoneController.text,)));
-    }
+    }*/
     //final response = await client.auth.signIn(phone: '+2348166239214').whenComplete(() => Navigator.push(context, MaterialPageRoute(builder: (context) => const OTPScreen())) );
     //final response = await client.auth.signUpWithPhone('08166239214', {
   }

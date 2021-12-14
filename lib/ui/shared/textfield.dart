@@ -137,11 +137,11 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           controller: widget.controller,
           validator: (value) {
             if (widget.functionValidate != null) {
-              String resultValidate =
+              /*String resultValidate =
               widget.functionValidate!(value, widget.parametersValidate);
               if (resultValidate != null) {
                 return resultValidate;
-              }
+              }*/
             }
             return null;
           },

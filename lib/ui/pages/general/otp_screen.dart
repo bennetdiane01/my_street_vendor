@@ -3,6 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart' as lottie;
+import 'package:my_street_vendor/controller/otp_controller.dart';
 import 'package:my_street_vendor/ui/pages/buyers/main_menu.dart';
 import 'package:my_street_vendor/ui/pages/general/register.dart';
 import 'package:my_street_vendor/ui/pages/vendors/vendor_menu.dart';
@@ -11,6 +12,8 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:sizer/sizer.dart';
 //import 'package:supabase/supabase.dart';
+
+//TODO convert to StatelessWidget
 class OTPScreen extends StatefulWidget {
   String? phoneNumber;
   OTPScreen({Key? key, this.phoneNumber}) : super(key: key);
@@ -20,16 +23,9 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  String? OTPpin;
-  bool _isLoading = false;
-  final box = GetStorage();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    box;
-  }
+  final controller = Get.put(OTPController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +48,7 @@ class _OTPScreenState extends State<OTPScreen> {
           SizedBox(height: 2.h,),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 3.h),
-              child: Text('Enter the OTP Code that was sent to ${box.read('phone')}', style: black16RegularTextStyle,textAlign: TextAlign.center,)),
+              child: Text('Enter the OTP Code that was sent to ${controller.box.read('phone')}', style: black16RegularTextStyle,textAlign: TextAlign.center,)),
           SizedBox(height: 8.h,),
           Container(
             height: 25.h,
@@ -74,71 +70,20 @@ class _OTPScreenState extends State<OTPScreen> {
                   ),
                   textFieldAlignment: MainAxisAlignment.spaceAround,
                   fieldStyle: FieldStyle.underline,
-                  onCompleted: (pin) async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    //final response = await client.auth.verifyOTP(phone: '+2348166239214', token: pin) );
-                    final response = await client.auth.verifyOTP(widget.phoneNumber!, pin).whenComplete((){
-                      print("Completed: " + pin);
-                    });
+                  onCompleted: (pin)  {
 
-                    if (response.error != null) {
-                      // Error
-                      print('Error: ${response.error?.message}');
-                      _errorDialog('Error Occured', 'Error: ${response.error?.message}');
-                    } else {
-                      // Success
-                      //checking the user is verify
-                      //var checking = await client.from('userDetails').select("*").is_('is_verify', null).execute();
-                      var checking = await client.from('userDetails').select("*").eq('phone', box.read('phone')).execute();
-                      print(checking.toJson());
-                      if(checking.data['is_verify'] == null){
-                        Get.offAll(() => Registration());
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => const Registration()));
-                      }
-                      //await client.from('userDetails').update({'is_verify': 1,}).eq('phone', widget.phoneNumber).execute();
-                      final session = response.data!.toJson();
-                      print(session);
-                      //print(client.auth.currentUser!.id);
-                      if(checking.data['account_type'] == "Vendor"){
-                        return Get.offAll(() => const VendorMenu());
-                      } else if(checking.data['account_type'] == "Buyer"){
-                        return Get.offAll(() => const MainMenu());
-                      }
-                      //.
-                      // _errorDialog('Successful', 'Success');
-
-
-                    }
-                    print("Completed: " + pin);
-                    // print("Completed: " + response.data!.user!.id);
+                    controller.onComplete(pin);
                   },
                   onChanged: (pin){
-                    print("Completed: " + pin);
+
                   },
                 ),
                 SizedBox(height: 3.h,),
                 InkWell(
                   onTap: () async {
-                    var checking = await client.from('userDetails').select("*").eq('phone', box.read('phone')).execute();
-                    print(checking.toJson());
-                    if(checking.status == 500){
-                      return _errorDialog('Error', 'No internet connection, check and try again');
-                    }
-                    print(checking.data[0]['full_name']);
-                    //if(checking.error == null && checking.status == 200 && checking.data == null){
-                    if(checking.data.length < 1 ){
-                      print('coorect');
-                      return Get.offAll(() => Registration());
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => const Registration()));
-                    }
-                    if(checking.data[0]['account_type'] == "Vendor"){
-                      return Get.offAll(() => VendorMenu());
-                    } else if(checking.data[0]['account_type'] == "Buyer"){
-                      return Get.offAll(() => MainMenu());
-                    }
-                    //await client.auth.signIn(phone: widget.phoneNumber);
+                    await client.auth.signIn(phone: controller.box.read('phone')).whenComplete(() {
+                    });
+                    debugPrint ('otp send');
                   },
                   child: Text(
                     'Resend OTP',
