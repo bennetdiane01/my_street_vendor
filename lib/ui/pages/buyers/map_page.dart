@@ -4,8 +4,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' as lottie;
+import 'package:my_street_vendor/controller/map_controller.dart';
 import 'package:my_street_vendor/models/mapModel.dart';
 import 'package:my_street_vendor/ui/pages/general/music_app.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
@@ -20,6 +22,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+
+  final mapController = Get.put(MapController());
 
   Coffee? elementArray;
 
@@ -60,7 +64,7 @@ class _MapPageState extends State<MapPage> {
 
     _showBottomSheet; // To set the bottom sheet invisible
     coffeeShops.forEach((element) async {
-      final Uint8List markerIcon = await getBytesFromAsset('assets/images/vendor.png', 70);
+      final Uint8List markerIcon = await getBytesFromAsset('assets/images/vendor.png', 100);
 
       allMarkers.add(
           Marker(
@@ -239,6 +243,8 @@ class _MapPageState extends State<MapPage> {
                   initialChildSize: 0.3,
                     maxChildSize: 0.4,
                     builder: (context, controller){
+                    mapController.isSaved.value =
+                        mapController.savedVendor.contains(elementArray);
                       return Container(
                         padding: EdgeInsets.all(6.w),
                         decoration: BoxDecoration(
@@ -323,19 +329,45 @@ class _MapPageState extends State<MapPage> {
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  width: 40.w,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: const BorderRadius.all(Radius.circular(5))
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      lottie.Lottie.asset('assets/lottie/favorite.json', height: 100.h),
-                                      Text('Favorite', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),)
-                                    ],
+
+
+                                InkWell(
+                                  onTap: (){
+                                    if(mapController.isSaved.value) {
+                                      mapController.savedVendor
+                                          .remove(elementArray!);
+                                      mapController.isSaved.value = false;
+                                      debugPrint('removed');
+
+                                    }else {
+                                      mapController.savedVendor.add(
+                                          elementArray!);
+                                      mapController.isSaved.value =true;
+
+                                      debugPrint('saved');
+
+
+                                        }
+                                      },
+
+                                  child: Container(
+                                    width: 40.w,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: const BorderRadius.all(Radius.circular(5))
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                         Obx(()=>Icon(Icons.favorite,
+                                             color:mapController.isSaved.value ? Colors.red: Colors.white)),
+
+
+
+                                        Text('Favorite', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),)
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],

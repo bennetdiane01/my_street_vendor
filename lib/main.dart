@@ -6,11 +6,18 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_street_vendor/ui/pages/buyers/main_menu.dart';
 import 'package:my_street_vendor/ui/pages/general/splash_screen.dart';
 import 'package:my_street_vendor/ui/pages/vendors/vendor_menu.dart';
+import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';
+import 'package:supabase/supabase.dart';
+
+import 'ui/pages/general/login.dart';
 
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+ // final client = SupabaseClient('https://atjikuixrjhpeggdhbnm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzMzkwNTM1NywiZXhwIjoxOTQ5NDgxMzU3fQ.ma2rjfQFG-0_DpNNj75MHkKqBwDg3-0VofTi713Uj6I');
+
   await Hive.initFlutter();
   await GetStorage.init();
   runApp(const MyApp());
@@ -30,7 +37,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: VendorMenu(),
+            home: MainMenu(),
           );
         }
     );
