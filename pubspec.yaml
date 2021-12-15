@@ -52,6 +52,10 @@ dependencies:
   flutter_animated_dialog: ^2.0.1 #for animated dialog
   shared_preferences: ^2.0.8 #for storage
   get_storage: ^2.0.3 #for getx local storage
+  flutter_sound: ^8.4.2
+  permission_handler:
+  intl: ^0.17.0
+  gap:
 
 
 

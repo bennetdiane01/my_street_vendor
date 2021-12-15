@@ -5,12 +5,14 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_street_vendor/ui/pages/buyers/main_menu.dart';
 import 'package:my_street_vendor/ui/pages/general/splash_screen.dart';
+import 'package:my_street_vendor/ui/pages/vendors/Recoder.dart';
 import 'package:my_street_vendor/ui/pages/vendors/vendor_menu.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';
 import 'package:supabase/supabase.dart';
 
 import 'ui/pages/general/login.dart';
+import 'ui/pages/vendors/simple_recorder.dart';
 
 
 Future main() async {
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: MainMenu(),
+            home: VendorMenu(),
           );
         }
     );

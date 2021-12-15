@@ -9,6 +9,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_street_vendor/controller/vendor_online.dart';
 import 'package:my_street_vendor/models/mapModel.dart';
+import 'package:my_street_vendor/ui/pages/vendors/simple_recorder.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:ui' as ui;
@@ -286,19 +287,14 @@ class _VendorMapState extends State<VendorMap> {
                                 onTap: () {
                                   Get.dialog(
                                       AlertDialog(
-                                          content: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              RaisedButton(
-                                                child: Text('Good Login'),
-                                                onPressed: () => Get.back(result: true),
-                                                // ** result: returns this value up the call stack **
-                                              ),
-                                              SizedBox(width: 5,),
-                                              RaisedButton(
-                                                child: Text('Bad Login'),
-                                                onPressed: () => Get.back(result: false),
-                                              ),
+                                              const Text('Record your voice'),
+                                              const SizedBox(height: 15,),
+                                              SimpleRecorder(),
+
+
                                             ],
                                           )
                                       )
