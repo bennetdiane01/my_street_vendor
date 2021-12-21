@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_street_vendor/ui/pages/general/login.dart';
 import 'package:my_street_vendor/ui/pages/buyers/main_menu.dart';
@@ -37,14 +38,17 @@ class _RegistrationState extends State<Registration> {
    String? city;
    String? account_type;
    String? phoneNumber;
-  final _formKey = GlobalKey<FormState>(); // for form state key
+  final _formKey = GlobalKey<FormState>();
+  final box = GetStorage();// for form state key
 
   //upload id card
   //user type
 
   _checkPhoneNumber() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    phoneNumber = prefs.getString('phone');
+    phoneNumber = box.read('phone');
+
+    /*SharedPreferences prefs = await SharedPreferences.getInstance();
+    phoneNumber = prefs.getString('phone');*/
   }
   @override
   void initState() {

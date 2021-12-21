@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -244,45 +245,29 @@ class _VendorMapState extends State<VendorMap> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              InkWell(
-                                onTap: () {
-                                  vendorOnlineController.checkifRealtime();
-                                  Get.dialog(
-                                      AlertDialog(
-                                          content: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              RaisedButton(
-                                                child: Text('Good Login'),
-                                                onPressed: () => Get.back(result: true),
-                                                // ** result: returns this value up the call stack **
-                                              ),
-                                              SizedBox(width: 5,),
-                                              RaisedButton(
-                                                child: Text('Bad Login'),
-                                                onPressed: () => Get.back(result: false),
-                                              ),
-                                            ],
-                                          )
-                                      )
-                                  );
-                                },
-                                child: Container(
-                                  width: 40.w,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: vendorOnlineController.isOnline.value == true ? primaryColor : colorRed,
-                                      borderRadius: const BorderRadius.all(Radius.circular(5))
+                              Obx((){
+                                return InkWell(
+                                  onTap: () {
+                                    vendorOnlineController.toggleOnlineStatus();
+
+                                  },
+                                  child: Container(
+                                    width: 40.w,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: vendorOnlineController.isOnline.value == true ? colorRed :primaryColor ,
+                                        borderRadius: const BorderRadius.all(Radius.circular(5))
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(vendorOnlineController.isOnline.value == true ? 'Go Offline' : 'Go Online', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),),
+                                        lottie.Lottie.asset('assets/lottie/hello.json'),
+                                      ],
+                                    ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(vendorOnlineController.isOnline.value == true ? 'Go Online' : 'Go Offline', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),),
-                                      lottie.Lottie.asset('assets/lottie/hello.json'),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                );
+                              }),
                               InkWell(
                                 onTap: () {
                                   Get.dialog(

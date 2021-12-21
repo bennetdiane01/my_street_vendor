@@ -31,7 +31,7 @@ ButtonTheme raisedButton(
     minWidth: minWidth!,
     height: height!/1.2,
     child: RaisedButton(
-        splashColor: Colors.grey!.withOpacity(0.5) ?? colorBlack,
+        splashColor: splashColor ?? Colors.grey.withOpacity(0.5),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 25),
             side: BorderSide(color: borderSideColor ?? color!)),

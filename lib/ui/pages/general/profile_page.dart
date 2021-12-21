@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
+import 'package:get/get.dart';
 
 import 'package:lottie/lottie.dart' as lottie;
+import 'package:my_street_vendor/ui/pages/vendors/update_profile_screen.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';
 
@@ -194,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   Widget _btnUpdate(){
     return InkWell(
       onTap: (){
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
+       Get.to(()=>UpdateProfileScreen());
 
       },
       child: Container(

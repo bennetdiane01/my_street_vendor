@@ -333,7 +333,8 @@ class _MapPageState extends State<MapPage> {
 
                                 InkWell(
                                   onTap: (){
-                                    if(mapController.isSaved.value) {
+                                    mapController.favouriteVendor('+2348162961126');
+                                    /*if(mapController.isSaved.value) {
                                       mapController.savedVendor
                                           .remove(elementArray!);
                                       mapController.isSaved.value = false;
@@ -347,7 +348,7 @@ class _MapPageState extends State<MapPage> {
                                       debugPrint('saved');
 
 
-                                        }
+                                        }*/
                                       },
 
                                   child: Container(
