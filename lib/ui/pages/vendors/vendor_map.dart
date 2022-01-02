@@ -262,7 +262,7 @@ class _VendorMapState extends State<VendorMap> {
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text(vendorOnlineController.isOnline.value == true ? 'Go Offline' : 'Go Online', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),),
-                                        lottie.Lottie.asset('assets/lottie/hello.json'),
+                                        //lottie.Lottie.asset('assets/lottie/hello.json'),
                                       ],
                                     ),
                                   ),

@@ -4,6 +4,7 @@ import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:get/get.dart';
 
 import 'package:lottie/lottie.dart' as lottie;
+import 'package:my_street_vendor/controller/vendor_online.dart';
 import 'package:my_street_vendor/ui/pages/vendors/update_profile_screen.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';
@@ -39,6 +40,7 @@ class SpritePainter extends CustomPainter {
     return true;
   }
 }
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -46,8 +48,11 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
+class _ProfilePageState extends State<ProfilePage>
+    with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
+
+  final vendorController = Get.put(VendorOnlineController());
 
   @override
   void initState() {
@@ -58,8 +63,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       vsync: this,
     );
     _startAnimation();
-
   }
+
   @override
   void dispose() {
     _animationController!.dispose();
@@ -73,56 +78,53 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       period: Duration(seconds: 1),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Profile'),
+        title: const Text('Profile'),
         automaticallyImplyLeading: false,
         centerTitle: true,
         //elevation: 0.0,
       ),
-      body: Container(
-        height: 100.h,
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                CustomPaint(
-                  painter: SpritePainter(_animationController!),
-                  child: Container(
-                    width: 200.0,
-                    height: 200.0,
-                    alignment: Alignment.center,
+      body:Obx((){
+        return  SizedBox(
+          height: 100.h,
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  CustomPaint(
+                    painter: SpritePainter(_animationController!),
                     child: Container(
-                      height: 100,
-                      width: 100,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white
-                      ),
-                      child: lottie.Lottie.asset('assets/lottie/humans.json'),
-                    )
-                    //color: colorRed,
+                        width: 200.0,
+                        height: 200.0,
+                        alignment: Alignment.center,
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.white),
+                          child: lottie.Lottie.asset('assets/lottie/humans.json'),
+                        )
+                      //color: colorRed,
+                    ),
                   ),
-                ),
-                Text('Boss Daina', style: black18MediumTextStyle,),
-              ],
-            ),
-            _displayUserDetails(),
-            //Text('Boss Daina', style: black18MediumTextStyle,),
-          ],
-        ),
-      ),
-/*
-      floatingActionButton: FloatingActionButton(
-        onPressed: _startAnimation,
-        child: Icon(Icons.play_arrow),
-      ),
-*/
+                  Text(
+                    vendorController.vendorModel.value.data![0].fullName!,
+                    style: black18MediumTextStyle,
+                  ),
+                ],
+              ),
+              _displayUserDetails(),
+            ],
+          ),
+        );
+      })
     );
   }
-  
+
   ///for displaying user details
   Widget _displayUserDetails() {
     return Container(
@@ -135,10 +137,15 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Icon(Feather.mail),
-                SizedBox(width: 10.w,),
+                SizedBox(
+                  width: 10.w,
+                ),
                 Container(
-                  width: 50.w,
-                    child: Text('dianeeamil@email.com', style: black16RegularTextStyle,)),
+                    width: 50.w,
+                    child: Text(
+                      'dianeeamil@email.com',
+                      style: black16RegularTextStyle,
+                    )),
                 //const Icon(Feather.arrow_right_circle)
               ],
             ),
@@ -149,10 +156,15 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Icon(Feather.phone),
-                SizedBox(width: 10.w,),
+                SizedBox(
+                  width: 10.w,
+                ),
                 Container(
-                  width: 50.w,
-                    child: Text('154255454544', style: black16RegularTextStyle,)),
+                    width: 50.w,
+                    child: Text(
+                      vendorController.vendorModel.value.data![0].phone!,
+                      style: black16RegularTextStyle,
+                    )),
                 //const Icon(Feather.arrow_right_circle)
               ],
             ),
@@ -163,10 +175,15 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Icon(Feather.map_pin),
-                SizedBox(width: 10.w,),
+                SizedBox(
+                  width: 10.w,
+                ),
                 Container(
-                  width: 50.w,
-                    child: Text('Block 24, Diana Avenue, New York, United State', style: black16RegularTextStyle,)),
+                    width: 50.w,
+                    child: Text(
+                      vendorController.vendorModel.value.data![0].locationAddress!,
+                      style: black16RegularTextStyle,
+                    )),
                 //const Icon(Feather.arrow_right_circle)
               ],
             ),
@@ -177,15 +194,26 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Icon(Feather.bookmark),
-                SizedBox(width: 10.w,),
+                SizedBox(
+                  width: 10.w,
+                ),
+
+                //TODO fix supabase vendor table to show is_verify
                 Container(
-                  width: 50.w,
-                    child: Text('Verified', style: black16RegularTextStyle,)),
+                    width: 50.w,
+                    child: Text(
+                      vendorController.vendorModel.value.data![0].status! == 1
+                          ? 'Verified'
+                          : 'Unverified',
+                      style: black16RegularTextStyle,
+                    )),
                 //const Icon(Feather.arrow_right_circle)
               ],
             ),
           ),
-          SizedBox(height: 5.h,),
+          SizedBox(
+            height: 5.h,
+          ),
           _btnUpdate(),
         ],
       ),
@@ -193,11 +221,11 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   }
 
   //update profile
-  Widget _btnUpdate(){
+  Widget _btnUpdate() {
     return InkWell(
-      onTap: (){
-       Get.to(()=>UpdateProfileScreen());
-
+      onTap: () {
+        //vendorController.getUserProfile();
+        Get.to(() => UpdateProfileScreen());
       },
       child: Container(
         width: 60.w,
@@ -206,9 +234,12 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
           color: primaryColor,
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Center(child: Text("Update profile", style: white20SemiBoldTextStyle,)),
+        child: Center(
+            child: Text(
+          "Update profile",
+          style: white20SemiBoldTextStyle,
+        )),
       ),
     );
   }
-
 }

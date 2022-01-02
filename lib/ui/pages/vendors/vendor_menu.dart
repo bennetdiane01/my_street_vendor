@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
 
-import 'package:my_street_vendor/ui/pages/general/profile_page.dart';
+import 'package:my_street_vendor/ui/pages/vendors/profile_page.dart';
 import 'package:my_street_vendor/ui/pages/vendors/vendor_map.dart';
 import 'package:my_street_vendor/ui/pages/vendors/vendor_request.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';

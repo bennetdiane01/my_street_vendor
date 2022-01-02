@@ -136,6 +136,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           ),
           controller: widget.controller,
           validator: (value) {
+            //TODO this is issue that i dont understand, so i commented it out
             if (widget.functionValidate != null) {
               /*String resultValidate =
               widget.functionValidate!(value, widget.parametersValidate);

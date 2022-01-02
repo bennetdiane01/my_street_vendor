@@ -109,22 +109,24 @@ class _LoginPageState extends State<LoginPage> {
 
   // for btn login
   Widget _btnLogin(){
-    return InkWell(
-      onTap: () async {
-        //
-        signIn();
+    return Obx((){
+      return InkWell(
+        onTap: () async {
+          //
+          signIn();
 
-      },
-      child: Container(
-        width: 90.w,
-        height: 60,
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(5),
+        },
+        child: Container(
+          width: 90.w,
+          height: 60,
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Center(child: controller.isLoading.value ? Center(child: CircularProgressIndicator()) : Text('Login/Register', style: white20SemiBoldTextStyle,)),
         ),
-        child: Center(child: controller.isLoading.value ? Center(child: CircularProgressIndicator()) : Text('Login/Register', style: white20SemiBoldTextStyle,)),
-      ),
-    );
+      );
+    });
   }
 
   //login button

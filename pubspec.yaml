@@ -45,7 +45,7 @@ dependencies:
   flutter_font_icons: ^2.2.4 #for all bundle icons
   map_launcher: ^2.1.1 #for external map launcher
   url_launcher: ^6.0.12 # to launch email, tel and url
-  supabase: ^0.2.7 #for supabase connection
+  supabase: ^0.2.10 #for supabase connection
   hive: ^2.0.4 # for phone storage
   hive_flutter: ^1.1.0
   otp_text_field: ^1.1.1 #for otp fields

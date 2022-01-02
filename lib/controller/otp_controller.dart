@@ -85,7 +85,9 @@ submitToVendor(userdata.data?[0]);
           'city': vendorData?.city,
           'country': vendorData?.country,
           'state': vendorData?.state,
-          'location_address': vendorData?.address
+          'location_address': vendorData?.address,
+          'is_verify': vendorData?.isVerify
+
 
 
         }

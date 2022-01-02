@@ -25,13 +25,20 @@ class MapController extends GetxController{
 
   void getAllVendor() async{
 
+    final mySubscription = client
+        .from('vendor')
+        .on(SupabaseEventTypes.update, (payload) {
+      // Handle realtime payload
+    })
+        .subscribe();
+
+
     var res = await client
         .from('vendor')
         .select()
         .execute();
 
     debugPrint('${res.data}');
-
 
 
   }

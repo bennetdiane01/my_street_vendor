@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:location/location.dart';
 import 'package:my_street_vendor/controller/local_storage.dart';
+import 'package:my_street_vendor/models/vendor_model.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:supabase/supabase.dart';
 
@@ -9,7 +12,18 @@ class VendorOnlineController extends GetxController {
 
   RxBool isOnline = false.obs;
 
-  var subscription;
+  RealtimeSubscription? subscription;
+
+  final vendorModel  = VendorModel().obs;
+
+  Location location = Location();
+
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
+  double? latitude;
+  double? longitude;
+  final box = GetStorage();
 
   LocalStorageController localStorageController = Get.put(LocalStorageController());
 
@@ -18,6 +32,8 @@ class VendorOnlineController extends GetxController {
     // TODO: implement onInit
     //ccc();
     //checkifRealtime();
+    streamVendor();
+    getUserProfile();
     super.onInit();
   }
   Future<void> changeStatus() async {
@@ -58,31 +74,36 @@ class VendorOnlineController extends GetxController {
 
   void checkifRealtime() {
 
-    client.from('vendor:status=eq.online').stream().execute().listen((event) {
-      debugPrint('event: $event');
+    client.from('vendor:status=eq.1').stream().execute().listen((event) {
+      debugPrint('event: ${event}');
     });
   }
 
   void toggleOnlineStatus() async{
-    Get.dialog(Center(child: const  CircularProgressIndicator()));
+
+    Get.dialog(const Center(child: CircularProgressIndicator()));
+
 
     if (isOnline.value) {
       final res = await
       client.from('vendor')
           .update({ 'status':  0})
-          .match({ 'status': '1' })
+          .match({ 'phone': box.read('phone'),})
           .execute();
       isOnline.value = false;
-      debugPrint('${res.data}');
+      //debugPrint('${res.data}');
       Get.back();
-    }else{
+    }
+    else{
+      getUserLocation();
       final res = await
       client.from('vendor')
-          .update({ 'status': 1 })
-          .match({ 'status': 0 })
+          .update({ 'status': 1 , 'lat': '$latitude', 'long':'$longitude'})
+
+          .match({ 'phone': box.read('phone'),})
           .execute();
       isOnline.value = true;
-      debugPrint('${res.data}');
+     // debugPrint('${res.data}');
       Get.back();
 
     }
@@ -91,13 +112,92 @@ class VendorOnlineController extends GetxController {
 
   }
 
+  void streamVendor() async{
+
+  /* final subscription = client
+        .from('vendor')
+        .stream()
+        .execute().listen((event) {
+     print(('\n\n #############streamEvent $event'));
+    });*/
+
+    subscription = client
+        .from('vendor')
+        .on(SupabaseEventTypes.update, (payload) {
+      // Handle realtime payload
+      print(('Update received! ${payload.newRecord}'));
+
+
+    })
+        .subscribe();
+
+
+
+
+
+
+    /*var res = await client
+        .from('vendor')
+        .select()
+    .match({ 'status': 1,})
+        .execute();
+
+    debugPrint('${res.data}');*/
+
+  }
+
   void getUserLocation() async{
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    latitude = _locationData.latitude!;
+    longitude = _locationData.longitude!;
+    update();
+
+
+    debugPrint('the location is ${_locationData.latitude} and ${_locationData.longitude}');
 
 
   }
 
 
   void getUserProfile() async{
+
+    final res = await
+    client.from('vendor')
+        .select()
+        .match({ 'phone': box.read('phone'),})
+        .execute();
+
+
+    debugPrint('${res.toJson()}');
+  vendorModel.value =   VendorModel.fromJson(res.toJson());
+
+ debugPrint('${vendorModel.value.data}');
+
+ update();
+
+
+
+
+
+
+
+
 
 
 
@@ -108,6 +208,6 @@ class VendorOnlineController extends GetxController {
   void onClose() {
     // TODO: implement onClose
     super.onClose();
-    client.removeSubscription(subscription);
+    client.removeSubscription(subscription!);
   }
 }

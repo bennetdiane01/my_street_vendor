@@ -1,47 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
+import 'package:my_street_vendor/controller/update_profile_controller.dart';
+import 'package:my_street_vendor/controller/vendor_online.dart';
 import 'package:my_street_vendor/ui/shared/textfield.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:sizer/sizer.dart';
 
 class UpdateProfileScreen extends StatelessWidget {
-  TextEditingController fullnameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController addressNoController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
+
+
+  final vendorUpdateController = Get.put(UpdateProfileController());
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          child: Column(
-            children: [
-              const Gap(30),
-              Text('Update your profile',
-                textAlign: TextAlign.center,
-                style: black18MediumTextStyle,),
-              const Gap(30),
-              _txtFullname(),
-              const Gap(20),
-              _txtAddress(),
-              const Gap(20),
-              _txtCountry(),
-              const Gap(20),
-              _txtState(),
-              const Gap(20),
-              _txtCity(),
-              const Gap(40),
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            child: Column(
+              children: [
+                const Gap(30),
+                Row(
+                  children: [
+                    IconButton(onPressed: (){},
+                        icon: const Icon(Icons.arrow_back_ios)),
+                    const Gap(50),
+                    Text('Update your profile',
+                      textAlign: TextAlign.center,
+                      style: black18MediumTextStyle,),
+                  ],
+                ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+
+                      const Gap(30),
+                      _txtFullname(),
+                      const Gap(20),
+                      _txtAddress(),
+                      const Gap(20),
+                      _txtEmail(),
+                      const Gap(20),
+                      _txtState(),
+                      const Gap(20),
+                      _txtCity(),
+                      const Gap(20),
+                      _txtCountry(),
+                      const Gap(40),
+                      _btnUpdate(),
 
 
 
 
 
-            ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -55,7 +75,7 @@ class UpdateProfileScreen extends StatelessWidget {
       textInputType: TextInputType.emailAddress,
       actionKeyboard: TextInputAction.next,
       functionValidate: commonValidation,
-      controller: fullnameController,
+      controller: vendorUpdateController.fullnameController,
       onSubmitField: () {},
       parametersValidate: "Please Enter Full Name.",
       txtColor: colorBlack,
@@ -64,14 +84,14 @@ class UpdateProfileScreen extends StatelessWidget {
     );
   }
   //phone
-  Widget _txtCountry() {
+  Widget _txtEmail() {
     return TextFormFieldWidget(
-      hintText: "Enter Country e.g India",
+      hintText: "Email Address",
       obscureText: false,
       textInputType: TextInputType.text,
       actionKeyboard: TextInputAction.next,
       functionValidate: commonValidation,
-      controller: countryController,
+      controller: vendorUpdateController.emailController,
       onSubmitField: () {},
       parametersValidate: "Please Enter Country.",
       txtColor: colorBlack,
@@ -84,12 +104,28 @@ class UpdateProfileScreen extends StatelessWidget {
     return TextFormFieldWidget(
       hintText: "Enter State",
       obscureText: false,
-      textInputType: TextInputType.emailAddress,
+      textInputType: TextInputType.name,
       actionKeyboard: TextInputAction.next,
       functionValidate: commonValidation,
-      controller: stateController,
+      controller: vendorUpdateController.stateController,
       onSubmitField: () {},
       parametersValidate: "Please Enter State.",
+      txtColor: colorBlack,
+      inputLength: LengthLimitingTextInputFormatter(100),
+      //prefixIcon: Icon(Icons.email, color: colorBlack,),
+    );
+  }
+
+  Widget _txtCountry() {
+    return TextFormFieldWidget(
+      hintText: "Enter Country",
+      obscureText: false,
+      textInputType: TextInputType.name,
+      actionKeyboard: TextInputAction.next,
+      functionValidate: commonValidation,
+      controller: vendorUpdateController.countryController,
+      onSubmitField: () {},
+      parametersValidate: "Please Enter Country.",
       txtColor: colorBlack,
       inputLength: LengthLimitingTextInputFormatter(100),
       //prefixIcon: Icon(Icons.email, color: colorBlack,),
@@ -103,7 +139,7 @@ class UpdateProfileScreen extends StatelessWidget {
       textInputType: TextInputType.text,
       actionKeyboard: TextInputAction.next,
       functionValidate: commonValidation,
-      controller: cityController,
+      controller: vendorUpdateController.cityController,
       onSubmitField: () {},
       parametersValidate: "Please Enter City.",
       txtColor: colorBlack,
@@ -119,7 +155,7 @@ class UpdateProfileScreen extends StatelessWidget {
       textInputType: TextInputType.emailAddress,
       actionKeyboard: TextInputAction.next,
       functionValidate: commonValidation,
-      controller: addressNoController,
+      controller: vendorUpdateController.addressNoController,
       onSubmitField: () {},
       parametersValidate: "Please an Shop Number or Address.",
       txtColor: colorBlack,
@@ -132,6 +168,11 @@ class UpdateProfileScreen extends StatelessWidget {
     return InkWell(
       onTap: (){
 
+        if (_formKey.currentState!.validate()) {
+          vendorUpdateController.updateProfile();
+
+        }
+
         //Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage2()));
 
       },
@@ -142,7 +183,7 @@ class UpdateProfileScreen extends StatelessWidget {
           color: primaryColor,
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Center(child: Text('Start Registration', style: white20SemiBoldTextStyle,)),
+        child: Center(child: Text('Update Profile', style: white20SemiBoldTextStyle,)),
       ),
     );
   }

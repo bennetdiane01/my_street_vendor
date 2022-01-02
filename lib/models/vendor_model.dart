@@ -71,6 +71,7 @@ class Data {
   String? state;
   String? city;
 
+
   Data({
     this.id,
     this.createdAt,
