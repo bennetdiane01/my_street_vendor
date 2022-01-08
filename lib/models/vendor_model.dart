@@ -6,7 +6,7 @@
 /// count : null
 
 class VendorModel {
-  List<Data>? data;
+  List<Datum>? data;
   int? status;
   dynamic? error;
   dynamic? count;
@@ -21,7 +21,7 @@ class VendorModel {
     if (json["data"] != null) {
       data = [];
       json["data"].forEach((v) {
-        data?.add(Data.fromJson(v));
+        data?.add(Datum.fromJson(v));
       });
     }
     status = json["status"];
@@ -56,7 +56,7 @@ class VendorModel {
 /// state : ""
 /// city : ""
 
-class Data {
+class Datum {
   int? id;
   String? createdAt;
   String? phone;
@@ -72,7 +72,7 @@ class Data {
   String? city;
 
 
-  Data({
+  Datum({
     this.id,
     this.createdAt,
     this.phone,
@@ -87,7 +87,7 @@ class Data {
     this.state,
     this.city});
 
-  Data.fromJson(dynamic json) {
+  Datum.fromJson(dynamic json) {
     id = json["id"];
     createdAt = json["created_at"];
     phone = json["phone"];

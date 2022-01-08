@@ -22,7 +22,6 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-
   final mapController = Get.put(MapController());
 
   Coffee? elementArray;
@@ -38,7 +37,8 @@ class _MapPageState extends State<MapPage> {
   int? prevPage;
 
   bool playing = false; // at the begining we are not playing any song
-  IconData playBtn = Icons.play_circle_outline; // the main state of the play button icon
+  IconData playBtn =
+      Icons.play_circle_outline; // the main state of the play button icon
 
   //Now let's start by creating our music player
   //first let's declare some object
@@ -50,20 +50,22 @@ class _MapPageState extends State<MapPage> {
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec =
-    await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
-
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _showBottomSheet; // To set the bottom sheet invisible
-    coffeeShops.forEach((element) async {
+    _showBottomSheet;
+    // To set the bottom sheet invisible
+    /* mapController.vendor.forEach((element) async {
       final Uint8List markerIcon = await getBytesFromAsset('assets/images/vendor.png', 100);
 
       allMarkers.add(
@@ -83,7 +85,7 @@ class _MapPageState extends State<MapPage> {
           infoWindow:
           InfoWindow(title: element.shopName, snippet: element.address),
           position: element.locationCoords!));
-    });
+    });*/
     _pageController = PageController(initialPage: 1, viewportFraction: 0.8)
       ..addListener(_onScroll);
 
@@ -162,10 +164,10 @@ class _MapPageState extends State<MapPage> {
                           ),
                         ]),
                     child: Container(
-                      //height: 50.h,
+                        //height: 50.h,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.white ),
+                            color: Colors.white),
                         child: Row(children: [
                           Container(
                               height: 100.h,
@@ -214,127 +216,156 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Hello Dear,', style: black18MediumTextStyle,),
+          title: Text(
+            'Hello Dear,',
+            style: black18MediumTextStyle,
+          ),
           automaticallyImplyLeading: false,
           elevation: 0.0,
           backgroundColor: whiteColor,
         ),
-        body: Stack(
-          //fit: StackFit.expand,
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: GoogleMap(
-                myLocationEnabled: true,
-                initialCameraPosition: const CameraPosition(
-                    target: LatLng(40.7128, -74.0060), zoom: 14.0),
-                markers: Set.from(allMarkers),
-                onMapCreated: mapCreated,
-                mapType: MapType.normal,
+        body: Obx(() {
+          mapController.isSaved.value = mapController
+              .savedVendor
+              .contains(mapController.singleVendor.value);
+
+          return Stack(
+            //fit: StackFit.expand,
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: GoogleMap(
+                  myLocationEnabled: true,
+                  initialCameraPosition: const CameraPosition(
+                      target: LatLng(40.74588, -73.9880), zoom: 14.0),
+                  markers: Set.from(mapController.allMarkers),
+                  onMapCreated:mapController.mapCreated,
+                  mapType: MapType.normal,
+                ),
               ),
-            ),
-            _showBottomSheet == false ? Text('') : Positioned(
-              bottom: 0.h,
-              child: Container(
-                height: 100.h,
-                width: 100.w,
-                child: DraggableScrollableSheet(
-                  initialChildSize: 0.3,
-                    maxChildSize: 0.4,
-                    builder: (context, controller){
-                    mapController.isSaved.value =
-                        mapController.savedVendor.contains(elementArray);
-                      return Container(
-                        padding: EdgeInsets.all(6.w),
-                        decoration: BoxDecoration(
-                          color: colorWhite,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(30)
-                          )
-                        ),
-                        child: ListView(
-                          children: [
-                            Text(
-                              elementArray!.shopName!,
-                              style: black16SemiBoldTextStyle,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.visible,
-                            ),
-                            SizedBox(height: 3.h,),
-                            Row(
-                              children: [
-                                InkWell(
-                                    child: Icon(playBtn, color: blackColor, size: 30,),
-                                  onTap: (){
-                                    if (!playing) {
-                                      //now let's play the song
-                                      cache!.play("audios/test.mp3");
-                                      setState(() {
-                                        playBtn = Icons.pause;
-                                        playing = true;
-                                      });
-                                    } else {
-                                      _player!.pause();
-                                      setState(() {
-                                        playBtn = Icons.play_arrow;
-                                        playing = false;
-                                      });
-                                    }
-                                  },
-                                ),
-                                SizedBox(width: 3.w,),
-                                //Icon(Icons.pause_circle_filled, color: blackColor, size: 30,),
-                                Container(
-                                  //width: 2.w,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+              mapController.showBottomSheet.value== false
+                  ? const SizedBox.shrink()
+                  : Positioned(
+                      bottom: 0.h,
+                      child: SizedBox(
+                        height: 100.h,
+                        width: 100.w,
+                        child: DraggableScrollableSheet(
+                          initialChildSize: 0.3,
+                          maxChildSize: 0.4,
+                          builder: (context, controller) {
+                                                      return Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                  color: colorWhite,
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(30))),
+                              child: ListView(
+                                children: [
+                                Obx(()=> Text(
+                                  mapController.singleVendor().businessName!,
+                                  style: black16SemiBoldTextStyle,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.visible,
+                                ),),
+                                  SizedBox(
+                                    height: 3.h,
+                                  ),
+                                  Row(
                                     children: [
-                                      Text(
-                                        "${position.inMinutes}:${position.inSeconds.remainder(60)}",
-                                        style: TextStyle(
-                                          fontSize: 18.0,
+                                      InkWell(
+                                        child: Icon(
+                                          playBtn,
+                                          color: blackColor,
+                                          size: 30,
+                                        ),
+                                        onTap: () {
+                                          if (!playing) {
+                                            //now let's play the song
+                                            cache!.play("audios/test.mp3");
+                                            setState(() {
+                                              playBtn = Icons.pause;
+                                              playing = true;
+                                            });
+                                          } else {
+                                            _player!.pause();
+                                            setState(() {
+                                              playBtn = Icons.play_arrow;
+                                              playing = false;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width: 3.w,
+                                      ),
+                                      //Icon(Icons.pause_circle_filled, color: blackColor, size: 30,),
+                                      Container(
+                                        //width: 2.w,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${position.inMinutes}:${position.inSeconds.remainder(60)}",
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                            slider(),
+                                            Text(
+                                              "${musicLength.inMinutes}:${musicLength.inSeconds.remainder(60)}",
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      slider(),
-                                      Text(
-                                        "${musicLength.inMinutes}:${musicLength.inSeconds.remainder(60)}",
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                        ),
+                                      SizedBox(
+                                        width: 3.w,
                                       ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(width: 3.w,),
-                              ],
-                            ),
-                            SizedBox(height: 3.h,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  width: 30.w,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: const BorderRadius.all(Radius.circular(5))
+                                  SizedBox(
+                                    height: 3.h,
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      lottie.Lottie.asset('assets/lottie/hello.json'),
-                                      Text('Hi!', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),)
-                                    ],
-                                  ),
-                                ),
+                                      Container(
+                                        width: 30.w,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5))),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            lottie.Lottie.asset(
+                                                'assets/lottie/hello.json'),
+                                            Text(
+                                              'Hi!',
+                                              style: black16SemiBoldTextStyle
+                                                  .copyWith(color: whiteColor),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
 
-
-                                InkWell(
-                                  onTap: (){
-                                    mapController.favouriteVendor('+2348162961126');
-                                    /*if(mapController.isSaved.value) {
+                                          mapController.favouriteVendor(mapController.singleVendor().phone!);
+                                          /*mapController.favouriteVendor(
+                                              mapController.singleVendor().phone! );
+                                          if(mapController.isSaved.value) {
                                       mapController.savedVendor
                                           .remove(elementArray!);
                                       mapController.isSaved.value = false;
@@ -349,40 +380,44 @@ class _MapPageState extends State<MapPage> {
 
 
                                         }*/
-                                      },
-
-                                  child: Container(
-                                    width: 40.w,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        color: primaryColor,
-                                        borderRadius: const BorderRadius.all(Radius.circular(5))
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                         Obx(()=>Icon(Icons.favorite,
-                                             color:mapController.isSaved.value ? Colors.red: Colors.white)),
-
-
-
-                                        Text('Favorite', style: black16SemiBoldTextStyle.copyWith(color: whiteColor),)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-
-                          ],
+                                        },
+                                        child: Container(
+                                          width: 40.w,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(5))),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Obx(() => Icon(Icons.favorite,
+                                                  color: mapController
+                                                          .isSaved.value
+                                                      ? Colors.red
+                                                      : Colors.white)),
+                                              Text(
+                                                'Favorite',
+                                                style: black16SemiBoldTextStyle
+                                                    .copyWith(
+                                                        color: whiteColor),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                ),
-              ),
-
-            ),
-            /*Positioned(
+                      ),
+                    ),
+              /*Positioned(
               bottom: 0.h,
               child: Container(
                 height: 20.h,
@@ -396,8 +431,9 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
             )*/
-          ],
-        ));
+            ],
+          );
+        }));
   }
 
   void mapCreated(controller) {
@@ -413,12 +449,10 @@ class _MapPageState extends State<MapPage> {
         bearing: 45.0,
         tilt: 45.0)));
   }
+
   moveCamera1(target) {
-    _controller!.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: target,
-        zoom: 14.0,
-        bearing: 45.0,
-        tilt: 45.0)));
+    _controller!.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: target, zoom: 14.0, bearing: 45.0, tilt: 45.0)));
   }
 
   //Slider for audio
@@ -426,27 +460,27 @@ class _MapPageState extends State<MapPage> {
     return Container(
       width: 55.w,
       child: Slider.adaptive(
-          activeColor: Colors.blue[800],
-          inactiveColor: Colors.grey[350],
-          value: position.inSeconds.toDouble(),
-          max: musicLength.inSeconds.toDouble(),
-          onChanged: (value) {
-            seekToSec(value.toInt());
-          },
+        activeColor: Colors.blue[800],
+        inactiveColor: Colors.grey[350],
+        value: position.inSeconds.toDouble(),
+        max: musicLength.inSeconds.toDouble(),
+        onChanged: (value) {
+          seekToSec(value.toInt());
+        },
         onChangeEnd: (value) {
-            print(value);
-            if (position.inSeconds == value){
-              playBtn = Icons.play_circle_outline;
-              //print('finished');
-            }
+          print(value);
+          if (position.inSeconds == value) {
+            playBtn = Icons.play_circle_outline;
+            //print('finished');
+          }
         },
       ),
     );
   }
+
   //let's create the seek function that will allow us to go to a certain position of the music
   void seekToSec(int sec) {
     Duration newPos = Duration(seconds: sec);
     _player!.seek(newPos);
   }
-
 }

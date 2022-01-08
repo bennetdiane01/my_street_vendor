@@ -27,7 +27,9 @@ class _FavoritePageState extends State<FavoritePage> {
         child: ListView.builder(
           itemCount: mapController.savedVendor.length,
           itemBuilder: (BuildContext context, int index) {
-            return _vendorList(mapController.savedVendor.toList()[index]);
+            return Container();
+
+              //_vendorList(mapController.savedVendor.toList()[index]);
           },
 
         ),
