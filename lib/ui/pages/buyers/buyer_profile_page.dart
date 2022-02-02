@@ -4,6 +4,7 @@ import 'package:flutter_font_icons/flutter_font_icons.dart';
 import 'package:get/get.dart';
 
 import 'package:lottie/lottie.dart' as lottie;
+import 'package:my_street_vendor/controller/buyer_controller.dart';
 import 'package:my_street_vendor/controller/vendor_online.dart';
 import 'package:my_street_vendor/ui/pages/vendors/update_profile_screen.dart';
 import 'package:my_street_vendor/ui/shared/variables.dart';
@@ -54,11 +55,12 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
 
   //TODO change to buyerController
 
-  final vendorController = Get.put(VendorOnlineController());
+  late final userController;
 
   @override
   void initState() {
     // TODO: implement initState
+     userController = Get.put(BuyerController());
     super.initState();
     //start animation
     _animationController = new AnimationController(
@@ -114,7 +116,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
                     ),
                   ),
                   Text(
-                    vendorController.vendorModel.value.data![0].fullName!,
+                    userController.userModel.value.data?[0].fullName ?? '',
                     style: black18MediumTextStyle,
                   ),
                 ],
@@ -133,7 +135,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
       margin: EdgeInsets.symmetric(horizontal: 10.w),
       child: Column(
         children: [
-          Container(
+         /* Container(
             margin: EdgeInsets.symmetric(vertical: 2.h),
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -151,7 +153,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
                 //const Icon(Feather.arrow_right_circle)
               ],
             ),
-          ),
+          ),*/
           Container(
             margin: EdgeInsets.symmetric(vertical: 2.h),
             child: Row(
@@ -164,7 +166,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
                 Container(
                     width: 50.w,
                     child: Text(
-                      vendorController.vendorModel.value.data![0].phone!,
+                      userController.userModel.value.data?[0].phone ?? '',
                       style: black16RegularTextStyle,
                     )),
                 //const Icon(Feather.arrow_right_circle)
@@ -183,7 +185,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
                 Container(
                     width: 50.w,
                     child: Text(
-                      vendorController.vendorModel.value.data![0].locationAddress!,
+                      userController.userModel.value.data?[0].address ?? '' ,
                       style: black16RegularTextStyle,
                     )),
                 //const Icon(Feather.arrow_right_circle)
@@ -200,15 +202,14 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
                   width: 10.w,
                 ),
 
-                //TODO fix supabase vendor table to show is_verify
-                Container(
+                /*Container(
                     width: 50.w,
                     child: Text(
-                      vendorController.vendorModel.value.data![0].status! == 1
+                      vendorController.userModel!.data![0].status! == 1
                           ? 'Verified'
                           : 'Unverified',
                       style: black16RegularTextStyle,
-                    )),
+                    )),*/
                 //const Icon(Feather.arrow_right_circle)
               ],
             ),
@@ -227,7 +228,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage>
     return InkWell(
       onTap: () {
         //vendorController.getUserProfile();
-        Get.to(() => UpdateProfileScreen());
+        Get.to(() => UpdateProfileScreen(), arguments: [userController.userModel.value.data![0], 'buyer']);
       },
       child: Container(
         width: 60.w,

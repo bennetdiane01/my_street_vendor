@@ -5,7 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_street_vendor/models/favorite_list.dart';
+import 'package:my_street_vendor/models/favorite_model.dart';
 import 'package:my_street_vendor/models/mapModel.dart';
+import 'package:my_street_vendor/models/user_data.dart';
 import 'package:my_street_vendor/models/vendor_model.dart' ;
 import 'package:my_street_vendor/ui/shared/variables.dart';
 import 'package:supabase/supabase.dart';
@@ -24,42 +27,81 @@ class MapController extends GetxController{
   final allMarkers = <Marker>[].obs;
   final singleVendor = Datum().obs;
 
+  final favoriteList = <FavoriteModel>[].obs;
+
+  final buyerModel = UserData().obs;
 
 
 
   @override
   void onInit() {
     streamVendor();
-   // mapCreated;
-   // setMarkers();
+   getAllFavoriteVendor();
+    getUserProfile();
     super.onInit();
 
 
   }
 
 
-  void getAllVendor() async{
-
-    final mySubscription = client
-        .from('vendor')
-        .on(SupabaseEventTypes.update, (payload) {
-      // Handle realtime payload
-    })
-        .subscribe();
-
-
-    var res = await client
-        .from('vendor')
+  void getUserProfile() async{
+    final res = await
+    client.from('userDetails')
         .select()
+        .match({ 'phone': box.read('phone'),})
         .execute();
 
-    debugPrint('${res.data}');
+    debugPrint('List of users ${res.toJson()}');
+    buyerModel.value =   UserData.fromJson(res.toJson());
+
+    /*debugPrint('${buyerModel.value.}');
+
+    update();*/
+
+
+
+
+
+
+
+
+
+
+
+
+  }
+
+
+  void getAllFavoriteVendor() async{
+    
+    var res = await client
+        .from('favorite')
+        .select('''
+    vendor_phone,
+    vendor (
+      phone,
+      lat, long, business_name
+    )
+  ''')
+    .eq('buyer_phone', box.read('phone'))
+        .execute();
+
+    debugPrint(' All favorite vendors ${res.data}');
+
+    var result = FavoriteList.fromJson(res.data);
+
+
+    favoriteList.assignAll(result.favorite!);
+
+    debugPrint('${favoriteList.length}');
+
+
 
 
   }
 
   void streamVendor() async{
-
+//TODO close stream
 
     var res = client.from('vendor')
         .stream()
@@ -67,7 +109,6 @@ class MapController extends GetxController{
         .listen((event) {
           tempVendorList.clear();
       event.forEach((element) {
-        debugPrint('${element}');
         final vens = Datum.fromJson(element);
 
 
@@ -111,7 +152,7 @@ class MapController extends GetxController{
     })
         .subscribe();*/
 
-    debugPrint('${vendor.length}');
+
 
    // setMarkers();
 
@@ -142,7 +183,7 @@ class MapController extends GetxController{
               icon: BitmapDescriptor.fromBytes(markerIcon),
               draggable: false,
               infoWindow:
-              InfoWindow(title: element.businessName, snippet: element.locationAddress),
+              InfoWindow(title: element.businessName, snippet: element.address),
               position:  covertStringToLatLng(element.lat!, element.long!)));
     });
   }

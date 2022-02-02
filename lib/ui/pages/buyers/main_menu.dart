@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
+import 'package:my_street_vendor/ui/pages/buyers/buyer_profile_page.dart';
 import 'package:my_street_vendor/ui/pages/buyers/favorite_page.dart';
 import 'package:my_street_vendor/ui/pages/buyers/map_page.dart';
 import 'package:my_street_vendor/ui/pages/vendors/profile_page.dart';
@@ -20,7 +21,7 @@ class _MainMenuState extends State<MainMenu> {
   static const List<Widget> _widgetOptions = <Widget>[
     MapPage(),
     FavoritePage(),
-    ProfilePage()
+    BuyerProfilePage()
   ];
 
   void _onItemTapped(int index) {
