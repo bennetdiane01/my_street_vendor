@@ -191,17 +191,6 @@ class VendorOnlineController extends GetxController {
 
  update();
 
-
-
-
-
-
-
-
-
-
-
-
   }
 
   @override

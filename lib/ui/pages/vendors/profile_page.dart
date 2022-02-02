@@ -181,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage>
                 Container(
                     width: 50.w,
                     child: Text(
-                      vendorController.vendorModel.value.data![0].locationAddress!,
+                      vendorController.vendorModel.value.data![0].address!,
                       style: black16RegularTextStyle,
                     )),
                 //const Icon(Feather.arrow_right_circle)
@@ -225,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage>
     return InkWell(
       onTap: () {
         //vendorController.getUserProfile();
-        Get.to(() => UpdateProfileScreen());
+        Get.to(() => UpdateProfileScreen(), arguments: [vendorController.vendorModel.value.data![0], 'vendor']);
       },
       child: Container(
         width: 60.w,

@@ -25,7 +25,9 @@ class UpdateProfileScreen extends StatelessWidget {
                 const Gap(30),
                 Row(
                   children: [
-                    IconButton(onPressed: (){},
+                    IconButton(onPressed: (){
+                      Get.back();
+                    },
                         icon: const Icon(Icons.arrow_back_ios)),
                     const Gap(50),
                     Text('Update your profile',

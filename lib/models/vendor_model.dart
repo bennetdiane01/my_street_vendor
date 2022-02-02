@@ -60,7 +60,7 @@ class Datum {
   int? id;
   String? createdAt;
   String? phone;
-  String? locationAddress;
+  String? address;
   String? lat;
   String? long;
   int? status;
@@ -76,7 +76,7 @@ class Datum {
     this.id,
     this.createdAt,
     this.phone,
-    this.locationAddress,
+    this.address,
     this.lat,
     this.long,
     this.status,
@@ -91,7 +91,7 @@ class Datum {
     id = json["id"];
     createdAt = json["created_at"];
     phone = json["phone"];
-    locationAddress = json["location_address"];
+    address = json["address"];
     lat = json["lat"];
     long = json["long"];
     status = json["status"];
@@ -108,7 +108,7 @@ class Datum {
     map["id"] = id;
     map["created_at"] = createdAt;
     map["phone"] = phone;
-    map["location_address"] = locationAddress;
+    map["address"] = address;
     map["lat"] = lat;
     map["long"] = long;
     map["status"] = status;
